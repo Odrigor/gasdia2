@@ -6,13 +6,34 @@
   font-family: 'Poppins',sans-serif;
 }
 body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+div .App {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
   background: linear-gradient(135deg, #ffa60084, #ff000091);
+  background-image: url("./2.png");
+  background-size: cover;
+  background-position: center center;
 }
+
+ .modal-cont{
+  position: absolute;
+  top: 2rem;
+  left: auto;
+  margin-left: 8%;
+  margin-right: 8%;
+  background-color:purple ;
+  font-size: 1.2rem;
+}
+
+
 .container{
   max-width: 700px;
   width: 100%;
@@ -28,13 +49,7 @@ body{
 }
 
 
-.modal-cont{
-    position: absolute;
-    margin-left: 8%;
-    margin-right: 8%;
-    background-color:purple ;
-    font-size: 1.2rem;
-}
+
 
 .container .title::before{
   content: "";
