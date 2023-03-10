@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Clientes (
   telefono VARCHAR(13) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS Productos (
-id_produtcto INT NOT NULL,
+id_producto INT NOT NULL,
 precio_original NUMERIC(6,0) NOT NULL,
 nombre VARCHAR(100) NOT NULL,
 precio_promocional NUMERIC(6,0),
@@ -36,3 +36,12 @@ CREATE TABLE IF NOT EXISTS Usuarios (
   user VARCHAR(10),
   password VARCHAR(255) NOT NULL
 );
+
+INSERT INTO Productos (id_producto,precio_original, nombre, precio_promocional, dias_margen)
+VALUES (1, 8000, 'gas de 5', 8000, 5);
+
+INSERT INTO Productos (id_producto, precio_original, nombre, precio_promocional, dias_margen)
+VALUES (2, 16000 , 'gas de 11', 16000, 8);
+
+INSERT INTO Productos (id_producto, precio_original, nombre, precio_promocional, dias_margen)
+VALUES (3, 21000 , 'gas de 16', 21000, 13);

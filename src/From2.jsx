@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
  
 const From2 = () => {
@@ -12,6 +12,15 @@ const From2 = () => {
   const [extra, setExtra] = useState('');
   const [producto, setProducto] = useState('');
   const [error, setError] = useState('');
+
+
+  const [productosEmpresa, setProductosEmpresa] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/productos')
+      .then(res => setProductosEmpresa(res.data))
+      .catch(err => console.error(err));
+  }, []);
 
   const validarRut = (rutCompleto) => {
     rutCompleto = rutCompleto.replace("‐","-");
@@ -96,15 +105,15 @@ const From2 = () => {
             <div className="category">
               <label htmlFor="dot-1">
                 <span className="dot one" />
-                <span className="gender">5 litros $8.990</span>
+                <span className="gender">5 litros ${ productosEmpresa.length=== 0 ? null : productosEmpresa[0].precio_original}</span>
               </label>
               <label htmlFor="dot-2">
                 <span className="dot two" />
-                <span className="gender">11 litros $16.990</span>
+                <span className="gender">11 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[1].precio_original}</span>
               </label>
               <label htmlFor="dot-3">
                 <span className="dot three" />
-                <span className="gender">15 litros $20.990</span>
+                <span className="gender">15 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[2].precio_original}</span>
               </label>
             </div>
           </div>
