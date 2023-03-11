@@ -5,6 +5,7 @@ import FormClientes from './FormClientes'
 import MiPagina from './MiPagina'
 import Autocomplete from './autocomplete'
 import ValidatePosition from './ValidatePosition'
+import SearchAddress2 from './SearchAddress2'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path='/lo' element={<LocationCheck></LocationCheck>} ></Route>
         <Route path='/autocomplete' element={<Autocomplete></Autocomplete>}></Route>
         <Route path='/val' element={<ValidatePosition></ValidatePosition>}></Route>
+        <Route path='/s' element={<SearchAddress2></SearchAddress2>}></Route>
       </Routes>
     </Router>
   )

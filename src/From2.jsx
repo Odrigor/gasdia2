@@ -6,12 +6,66 @@ const From2 = () => {
   const [rut, setRut] = useState('');
   const [email, setEmail] = useState('');
   const [numero, setNumero] = useState('');
-  const [comuna, setComuna] = useState('');
-  const [calle, setCalle] = useState('');
-  const [direccion, setDireccion] = useState('');
   const [extra, setExtra] = useState('');
   const [producto, setProducto] = useState('');
   const [error, setError] = useState('');
+  const [direccionNumero , setdireccionNumero ] = useState ('');
+
+  const [address, setAddress] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  const handleAddressChange = (e) => {
+    const value = e.target.value;
+    setAddress(value);
+
+    if (value.length > 3) {
+      axios
+        .get('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest', {
+          params: {
+            text: value,
+            f: 'json',
+            token: 'AAPK904d7ea339874c398db5877689b626d88zd9H8gtNj0O3HYtyjzxTNl9hmQYFZgTOXJHyw_gtXMvzDuIOGcM7G8LgYjIGTkn',
+            //countryCode: 'CL',
+            category: 'Address',
+            searchExtent: '-70.9119,-33.6659,-70.4702,-33.3268',
+            maxSuggestions: 3
+          }
+        })
+        .then((response) => {
+          setSuggestions(response.data.suggestions);
+        });
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setAddress(suggestion.text);
+    setSuggestions([]);
+
+    axios
+      .get('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates', {
+        params: {
+          magicKey: suggestion.magicKey,
+          f: 'json',
+          token: 'AAPK904d7ea339874c398db5877689b626d88zd9H8gtNj0O3HYtyjzxTNl9hmQYFZgTOXJHyw_gtXMvzDuIOGcM7G8LgYjIGTkn'
+        }
+      })
+      .then((response) => {
+        if (response.data.candidates.length > 0) {
+          const location = response.data.candidates[0].location;
+          setLatitude(location.y);
+          setLongitude(location.x);
+        }
+      });
+  };
+
+
+  const handleSelection = (value) => {
+    setProducto(value);
+  }
 
 
   const [productosEmpresa, setProductosEmpresa] = useState([]);
@@ -45,7 +99,10 @@ const From2 = () => {
       alert('Rut invalido');
       return;
     }
-    setError('');
+    if(producto===''){
+      alert('No se ha seleccionado un producto');
+      return;
+    }
     const consulta = await axios.post('url', {
       rut
     });
@@ -81,20 +138,23 @@ const From2 = () => {
               <input type="text" placeholder="(+56) tu numero" value={numero} onChange={e => setNumero(e.target.value)} required />
             </div>
             <div className="input-box">
-              <span className="details">Comuna</span>
-              <input type="text" placeholder="comuna" value={comuna} onChange={e => setComuna(e.target.value)} required />
-            </div>
-            <div className="input-box">
-              <span className="details">Calle</span>
-              <input type="text" placeholder="calle" value={calle} onChange={e => setCalle(e.target.value)} required />
+              <span className="details">Direccion</span>
+              <input type="text" value={address} onChange={handleAddressChange} placeholder="Direccion" required />
+              <ul>
+        {suggestions.map((suggestion) => (
+          <li key={suggestion.magicKey} onClick={() => handleSuggestionClick(suggestion)}>
+            {suggestion.text.slice(0, suggestion.text.indexOf(", Región Metropolitana de Santiago,"))}
+          </li>
+        ))}
+      </ul>
             </div>
             <div className="input-box">
               <span className="details">Numero de direción</span>
-              <input type="text" placeholder="numero de casa o depto" value={direccion} onChange={e => setDireccion(e.target.value)} required />
+              <input type="text" placeholder="numero de casa o depto" value={direccionNumero} onChange={e => setdireccionNumero(e.target.value)} required />
             </div>
             <div className="input-box">
               <span className="details">Información extra ubicación</span>
-              <input type="text" placeholder="ej1:casa reja verde, ej2:depto pizo 3" value={extra} onChange={e => setExtra(e.target.value)} required />
+              <input type="text" placeholder="ej1:casa reja verde, ej2:depto pizo 3" value={extra} onChange={e => setExtra(e.target.value)} />
             </div>
           </div>
           <div className="gender-details">
@@ -103,15 +163,15 @@ const From2 = () => {
             <input type="radio" name="gender" value="15 litros $20.990" id="dot-3" onChange={e => setProducto(e.target.value)} />
             <span className="gender-title">Producto</span>
             <div className="category">
-              <label htmlFor="dot-1">
+              <label htmlFor="dot-1" onClick={() => handleSelection(1)}>
                 <span className="dot one" />
                 <span className="gender">5 litros ${ productosEmpresa.length=== 0 ? null : productosEmpresa[0].precio_original}</span>
               </label>
-              <label htmlFor="dot-2">
+              <label htmlFor="dot-2" onClick={() => handleSelection(2)}>
                 <span className="dot two" />
                 <span className="gender">11 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[1].precio_original}</span>
               </label>
-              <label htmlFor="dot-3">
+              <label htmlFor="dot-3" onClick={() => handleSelection(3)}>
                 <span className="dot three" />
                 <span className="gender">15 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[2].precio_original}</span>
               </label>
