@@ -1,6 +1,5 @@
 import React, { useState,useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import FormClientes from './FormClientes';
 import From2 from './From2';
 
 function MiPagina() {

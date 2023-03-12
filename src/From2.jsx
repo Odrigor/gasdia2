@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
  
 const From2 = () => {
   const [nombre, setNombre] = useState('');
@@ -15,6 +18,29 @@ const From2 = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [latitude2, setLatitude2] = useState(null);
+  const [longitude2, setLongitude2] = useState(null);
+
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          setLatitude2(position.coords.latitude);
+          setLongitude2(position.coords.longitude);
+        });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+
+
+
+  const notify = (msj) => toast(msj);
 
   const handleAddressChange = (e) => {
     const value = e.target.value;
@@ -29,7 +55,7 @@ const From2 = () => {
             token: 'AAPK904d7ea339874c398db5877689b626d88zd9H8gtNj0O3HYtyjzxTNl9hmQYFZgTOXJHyw_gtXMvzDuIOGcM7G8LgYjIGTkn',
             //countryCode: 'CL',
             category: 'Address',
-            searchExtent: '-70.9119,-33.6659,-70.4702,-33.3268',
+            searchExtent: '-71.0657,-33.736719,-70.312074,-33.148692',
             maxSuggestions: 3
           }
         })
@@ -44,22 +70,6 @@ const From2 = () => {
   const handleSuggestionClick = (suggestion) => {
     setAddress(suggestion.text);
     setSuggestions([]);
-
-    axios
-      .get('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates', {
-        params: {
-          magicKey: suggestion.magicKey,
-          f: 'json',
-          token: 'AAPK904d7ea339874c398db5877689b626d88zd9H8gtNj0O3HYtyjzxTNl9hmQYFZgTOXJHyw_gtXMvzDuIOGcM7G8LgYjIGTkn'
-        }
-      })
-      .then((response) => {
-        if (response.data.candidates.length > 0) {
-          const location = response.data.candidates[0].location;
-          setLatitude(location.y);
-          setLongitude(location.x);
-        }
-      });
   };
 
 
@@ -92,25 +102,65 @@ const From2 = () => {
       S=(S+T%10*(9-M++%6))%11;
     return S?S-1:'k';
     };
+
   
+  
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {  
+      const R = 6371e3; 
+      const φ1 = lat1 * Math.PI/180; 
+      const φ2 = lat2 * Math.PI/180;
+      const Δφ = (lat2-lat1) * Math.PI/180;
+      const Δλ = (lon2-lon1) * Math.PI/180;
+    
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    
+      const d = Math.round(R * c);
+      return d;
+    }
+
   const handleSubmit = async e => {
     e.preventDefault();
+
+
     if (!validarRut(rut)) {
-      alert('Rut invalido');
+      notify('Rut invalido');
       return;
     }
     if(producto===''){
-      alert('No se ha seleccionado un producto');
+      notify('No se ha seleccionado un producto');
       return;
     }
-    const consulta = await axios.post('url', {
+
+
+  
+
+      const arcgisUrl = `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine=${address}&f=json`;
+      axios.get(arcgisUrl)
+      .then(response => {
+        const location = response.data.candidates[0].location;
+        console.log(`Latitude: ${location.y}, Longitude: ${location.x}`);
+        setLatitude(location.y);
+        setLongitude(location.x);
+    
+        console.log(latitude);
+        console.log(longitude);
+        console.log('La distancia entre los puntos es: ' + calculateDistance(latitude, longitude, latitude2, longitude2));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    /*const consulta = await axios.post('url', {
       rut
     });
     if(consulta.data) {
-      alert('Pedido ingresado con exito');
+      notify('Pedido ingresado con exito');
     } else {
-      alert('No se puede realizar la compra');
-    }
+      notify('No se puede realizar la compra');
+    }*/
   };
 
   return (
@@ -179,6 +229,7 @@ const From2 = () => {
           </div>
           <div className="button">
             <input type="submit" value="Ingresar pedido" />
+            <ToastContainer />
           </div>
         </form>
       </div>
