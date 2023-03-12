@@ -3,9 +3,10 @@ USE plataformagas;
 CREATE TABLE IF NOT EXISTS Pedidos (
   id_pedido INT AUTO_INCREMENT PRIMARY KEY,
   id_cliente INT NOT NULL,
-  repartidor VARCHAR(100),
+  repartidor VARCHAR(50),
   fechahora TIMESTAMP NOT NULL,
-  direccion_entrega VARCHAR(150) NOT NULL,
+  direccion_entrega VARCHAR(120) NOT NULL,
+  infoextra VARCHAR(200) NOT NULL,
   id_produtcto INT NOT NULL,
   latitud_pedido DECIMAL(10,8) NOT NULL,
   longitud_pedido DECIMAL(10,8) NOT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Pedidos (
   entregado BIT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS Clientes (
-  rut INT AUTO_INCREMENT PRIMARY KEY,
+  rut INT PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL,
   correo VARCHAR(50) NOT NULL,
   telefono VARCHAR(13) NOT NULL
@@ -26,7 +27,7 @@ precio_promocional NUMERIC(6,0),
 dias_margen INT
 );
 CREATE TABLE IF NOT EXISTS Entregas (
-  id_pedido INT NOT NULL,
+  id_pedido INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   latitud_entrega DECIMAL(10,8) NOT NULL,
   longitud_entrega DECIMAL(10,8) NOT NULL,
   fechahora TIMESTAMP NOT NULL

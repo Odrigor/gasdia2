@@ -15,8 +15,7 @@ function App() {
 
     <Router>
       <Routes>
-        <Route path='/' element={<FormClientes></FormClientes>}></Route>
-        <Route path='/modal' element={<MiPagina></MiPagina>}></Route>
+        <Route path='/' element={<MiPagina></MiPagina>}></Route>
         <Route path='/lo' element={<LocationCheck></LocationCheck>} ></Route>
         <Route path='/autocomplete' element={<Autocomplete></Autocomplete>}></Route>
         <Route path='/val' element={<ValidatePosition></ValidatePosition>}></Route>

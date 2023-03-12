@@ -11,7 +11,6 @@ const From2 = () => {
   const [numero, setNumero] = useState('');
   const [extra, setExtra] = useState('');
   const [producto, setProducto] = useState('');
-  const [error, setError] = useState('');
   const [direccionNumero , setdireccionNumero ] = useState ('');
 
   const [address, setAddress] = useState('');
@@ -20,6 +19,8 @@ const From2 = () => {
   const [longitude, setLongitude] = useState(null);
   const [latitude2, setLatitude2] = useState(null);
   const [longitude2, setLongitude2] = useState(null);
+
+  const [ingresado, setIngresado] = useState(false);
 
 
   useEffect(() => {
@@ -148,6 +149,36 @@ const From2 = () => {
         console.log(latitude);
         console.log(longitude);
         console.log('La distancia entre los puntos es: ' + calculateDistance(latitude, longitude, latitude2, longitude2));
+
+        if(calculateDistance(latitude, longitude, latitude2, longitude2) < 250 ){
+          notify('Su pedido ha sido ingresado');
+          const data = {
+            rut: 12345678,
+            nombre: 'Juan Perez',
+            correo: 'juan.perez@example.com',
+            telefono: '123456789',
+            repartidor: 'Pedro',
+            direccion_entrega: 'Calle Falsa 123',
+            infoextra: 'Sin cebolla',
+            id_producto: 1,
+            latitud_pedido: -33.4372,
+            longitud_pedido: -70.6506,
+            cantidad: 2,
+            entregado: false,
+            dias_margen: 7
+          };
+          
+          axios.post('http://localhost:3000/ingresapedido', data)
+            .then(function (response) {
+              console.log(response.data);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+        else{
+          notify('Lamentablemente no ha sido posible procesar su ingreso');
+        }
       })
       .catch(error => {
         console.log(error);
@@ -165,75 +196,75 @@ const From2 = () => {
 
   return (
     <div className='App'>
-<div className="container">
-      <div className="title">Pedir gas con Descuento, oferta especial</div>
-      <div className="content">
-        <form action="#" onSubmit={handleSubmit}>
-          <div className="user-details">
-            <div className="input-box">
-              <span className="details">Nombre</span>
-              <input type="text" placeholder="nombre" value={nombre} onChange={e => setNombre(e.target.value)} required />
+      <div className="container">
+        <div className="title">Pedir gas con Descuento, oferta especial</div>
+        <div className="content">
+          <form action="#" onSubmit={handleSubmit}>
+            <div className="user-details">
+              <div className="input-box">
+                <span className="details">Nombre</span>
+                <input type="text" placeholder="nombre" value={nombre} onChange={e => setNombre(e.target.value)} required />
+              </div>
+              <div className="input-box">
+                <span className="details">Rut</span>
+                <input type="text" placeholder="rut sin puntos y con guion" value={rut} onChange={e => setRut(e.target.value)} required />
+                {error && <span>{error}</span>}
+              </div>
+              <div className="input-box">
+                <span className="details">Email</span>
+                <input type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} required />
+              </div>
+              <div className="input-box">
+                <span className="details">Numero de contacto</span>
+                <input type="text" placeholder="(+56) tu numero" value={numero} onChange={e => setNumero(e.target.value)} required />
+              </div>
+              <div className="input-box">
+                <span className="details">Direccion</span>
+                <input type="text" value={address} onChange={handleAddressChange} placeholder="Direccion" required />
+                <ul>
+          {suggestions.map((suggestion) => (
+            <li key={suggestion.magicKey} onClick={() => handleSuggestionClick(suggestion)}>
+              {suggestion.text.slice(0, suggestion.text.indexOf(", Región Metropolitana de Santiago,"))}
+            </li>
+          ))}
+        </ul>
+              </div>
+              <div className="input-box">
+                <span className="details">Numero de direción</span>
+                <input type="text" placeholder="numero de casa o depto" value={direccionNumero} onChange={e => setdireccionNumero(e.target.value)} required />
+              </div>
+              <div className="input-box">
+                <span className="details">Información extra ubicación</span>
+                <input type="text" placeholder="ej1:casa reja verde, ej2:depto pizo 3" value={extra} onChange={e => setExtra(e.target.value)} />
+              </div>
             </div>
-            <div className="input-box">
-              <span className="details">Rut</span>
-              <input type="text" placeholder="rut sin puntos y con guion" value={rut} onChange={e => setRut(e.target.value)} required />
-              {error && <span>{error}</span>}
+            <div className="gender-details">
+              <input type="radio" name="gender" value="5 litros $8.990" id="dot-1" onChange={e => setProducto(e.target.value)} />
+              <input type="radio" name="gender" value="11 litros $16.990" id="dot-2" onChange={e => setProducto(e.target.value)} />
+              <input type="radio" name="gender" value="15 litros $20.990" id="dot-3" onChange={e => setProducto(e.target.value)} />
+              <span className="gender-title">Producto</span>
+              <div className="category">
+                <label htmlFor="dot-1" onClick={() => handleSelection(1)}>
+                  <span className="dot one" />
+                  <span className="gender">5 litros ${ productosEmpresa.length=== 0 ? null : productosEmpresa[0].precio_original}</span>
+                </label>
+                <label htmlFor="dot-2" onClick={() => handleSelection(2)}>
+                  <span className="dot two" />
+                  <span className="gender">11 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[1].precio_original}</span>
+                </label>
+                <label htmlFor="dot-3" onClick={() => handleSelection(3)}>
+                  <span className="dot three" />
+                  <span className="gender">15 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[2].precio_original}</span>
+                </label>
+              </div>
             </div>
-            <div className="input-box">
-              <span className="details">Email</span>
-              <input type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <div className="button">
+              <input type="submit" value="Ingresar pedido" />
+              <ToastContainer />
             </div>
-            <div className="input-box">
-              <span className="details">Numero de contacto</span>
-              <input type="text" placeholder="(+56) tu numero" value={numero} onChange={e => setNumero(e.target.value)} required />
-            </div>
-            <div className="input-box">
-              <span className="details">Direccion</span>
-              <input type="text" value={address} onChange={handleAddressChange} placeholder="Direccion" required />
-              <ul>
-        {suggestions.map((suggestion) => (
-          <li key={suggestion.magicKey} onClick={() => handleSuggestionClick(suggestion)}>
-            {suggestion.text.slice(0, suggestion.text.indexOf(", Región Metropolitana de Santiago,"))}
-          </li>
-        ))}
-      </ul>
-            </div>
-            <div className="input-box">
-              <span className="details">Numero de direción</span>
-              <input type="text" placeholder="numero de casa o depto" value={direccionNumero} onChange={e => setdireccionNumero(e.target.value)} required />
-            </div>
-            <div className="input-box">
-              <span className="details">Información extra ubicación</span>
-              <input type="text" placeholder="ej1:casa reja verde, ej2:depto pizo 3" value={extra} onChange={e => setExtra(e.target.value)} />
-            </div>
-          </div>
-          <div className="gender-details">
-            <input type="radio" name="gender" value="5 litros $8.990" id="dot-1" onChange={e => setProducto(e.target.value)} />
-            <input type="radio" name="gender" value="11 litros $16.990" id="dot-2" onChange={e => setProducto(e.target.value)} />
-            <input type="radio" name="gender" value="15 litros $20.990" id="dot-3" onChange={e => setProducto(e.target.value)} />
-            <span className="gender-title">Producto</span>
-            <div className="category">
-              <label htmlFor="dot-1" onClick={() => handleSelection(1)}>
-                <span className="dot one" />
-                <span className="gender">5 litros ${ productosEmpresa.length=== 0 ? null : productosEmpresa[0].precio_original}</span>
-              </label>
-              <label htmlFor="dot-2" onClick={() => handleSelection(2)}>
-                <span className="dot two" />
-                <span className="gender">11 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[1].precio_original}</span>
-              </label>
-              <label htmlFor="dot-3" onClick={() => handleSelection(3)}>
-                <span className="dot three" />
-                <span className="gender">15 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[2].precio_original}</span>
-              </label>
-            </div>
-          </div>
-          <div className="button">
-            <input type="submit" value="Ingresar pedido" />
-            <ToastContainer />
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
