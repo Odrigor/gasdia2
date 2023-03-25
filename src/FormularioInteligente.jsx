@@ -4,8 +4,13 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SolicitudContext } from './Context/SolicitudContext';
+
+import { Modal, Button } from 'react-bootstrap';
  
-const From2 = () => {
+const FormularioInteligente = () => {
+  //modal
+  const [showModal, setShowModal] = useState(true);
+  //datos del formulario
   const [nombre, setNombre] = useState('');
   const [rut, setRut] = useState('');
   const [email, setEmail] = useState('');
@@ -13,32 +18,16 @@ const From2 = () => {
   const [extra, setExtra] = useState('');
   const [producto, setProducto] = useState('');
   const [direccionNumero , setdireccionNumero ] = useState ('');
-
   const [address, setAddress] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
+
   const [latitude2, setLatitude2] = useState(null);
   const [longitude2, setLongitude2] = useState(null);
 
 
   const {setSolicitud, solicitud} =  useContext(SolicitudContext);
 
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          setLatitude2(position.coords.latitude);
-          setLongitude2(position.coords.longitude);
-        });
-      } else {
-        console.log("Geolocation is not supported by this browser.");
-      }
-    }, 2000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+  const [resultmsj, setresultmsj] = useState('')
 
 
 
@@ -141,31 +130,9 @@ const From2 = () => {
       .then(response => {
         const location = response.data.candidates[0].location;
         console.log(`Latitude: ${location.y}, Longitude: ${location.x}`);
-        setLatitude(location.y);
-        setLongitude(location.x);
-    
-        console.log(latitude);
-        console.log(longitude);
-        console.log('La distancia entre los puntos es: ' + calculateDistance(latitude, longitude, latitude2, longitude2));
 
-        if(calculateDistance(latitude, longitude, latitude2, longitude2) < 12000 ){
+         if(calculateDistance(location.y, location.x, latitude2, longitude2) < 12000 ) {
           notify('Su pedido esta siendo procesado, espere resuesta');
-          const data = {
-            rut: rut,
-            nombre: nombre,
-            correo: email,
-            telefono: numero,
-            repartidor: '',
-            direccion_entrega: 'Calle Falsa 123',
-            infoextra: 'Sin cebolla',
-            id_producto: 1,
-            latitud_pedido: -33.4372,
-            longitud_pedido: -70.6506,
-            cantidad: 2,
-            entregado: false,
-            dias_margen: 7
-          };
-          console.log(producto)
           axios.post('http://localhost:3000/ingresa', {
             nombre: nombre,
             rut: rut,
@@ -174,20 +141,22 @@ const From2 = () => {
             infoextra: extra,
             id_producto: producto,
             direccion_entrega: address + ' ' + direccionNumero ,
-            latitud_pedido: latitude,
-            longitud_pedido: longitude,
-            dias_margen: 2,
-            id_producto: 1,
+            latitud_pedido: latitude2,
+            longitud_pedido: longitude2,
+            dias_margen: 0,
             cantidad: 1,
             entregado: 0
   })
   .then(function (response) {
     if(response.data){
       console.log('Pedido aprobado')
+      setresultmsj('¡Tu pedido está en camino! Queremos agradecerte por elegir nuestro servicio de gas con descuento en línea y esperamos superar tus expectativas. ¡Gracias por ser parte de nuestra familia de clientes satisfechos!')
+      setSolicitud(0)
     }
     else{
       console.log('Pedido Rechazado')
-      notify('su pedido NO ha sido ingresado, por alguno de los siguientes motivos \n 1. la distancia entre la direccion y el dispositivo no es cercana 2. No ha esperado el tiempo suficiente de margen para volver a comprar con descuento ');
+      setresultmsj('Su pedido no ha sido ingresado, debido a que aun no han pasado el tiempo suficiente desde su ultimo pedido, para poder volver a comprar con descuento.')
+      setSolicitud(0)
     }
   })
   .catch(function (error) {
@@ -195,26 +164,59 @@ const From2 = () => {
   });
         }
         else{
-          notify('Lamentablemente no ha sido posible procesar su ingreso');
+            setresultmsj('Su pedido NO ha sido ingresado debido a un criterio de geolocalizacion')
+            setSolicitud(0)
         }
       })
       .catch(error => {
         console.log(error);
       });
+  };
 
-    /*const consulta = await axios.post('url', {
-      rut
+
+  const handleButtonClick = () => {
+    navigator.geolocation.getCurrentPosition(position => {
+      setLatitude2(position.coords.latitude);
+      setLongitude2(position.coords.longitude);
     });
-    if(consulta.data) {
-      notify('Pedido ingresado con exito');
+  };
+
+
+  const handleAccept = () => {
+    // El usuario aceptó los términos y condiciones
+    handleButtonClick();
+    if (latitude2=== null || longitude2 === null || latitude2=== undefined || longitude2 === undefined) {
+      setShowModal(true);
     } else {
-      notify('No se puede realizar la compra');
-    }*/
+      console.log(latitude2)
+      console.log(longitude2)
+      setShowModal(false);
+    }
+  };
+  
+  const handleReject = () => {
+    // El usuario rechazó los términos y condiciones
+    setShowModal(true);
   };
 
   return (
     <div className='App'>
-      <div className="container">
+    <Modal show={showModal} className='modal-cont'>
+        <Modal.Header>
+          <Modal.Title>Terminos y condiciones</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="modal-text">
+        Gracias por elegir nuestro servicio de pedidos de gas a domicilio. Al aceptar estos términos, aseguramos que su pedido se procesará de forma segura y rápida. Al hacer su pedido, usted acepta proporcionar su ubicación, su número de RUT y su nombre para realizar la validación interna necesaria. Podemos rechazar su pedido en algunos casos, pero le garantizamos un descuento único para su pedido si cumple con los siguientes criterios: 1) la distancia entre el dispositivo y la dirección proporcionada debe ser menor a 1 kilómetro y 2) deben haber pasado al menos 7 días desde su última compra con descuento. De lo contrario, su pedido será rechazado. ¡Gracias de nuevo por elegirnos! Recuerde permitir compartir su ubicación. Considere que si al apretar aceptar ese mensaje sigue saliendo, es porque no tiene permitido compartir su ubicación.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className="modal-button" variant="secondary" onClick={handleReject}>Rechazar</Button>
+          <Button className="modal-button" variant="primary" onClick={handleAccept}>Aceptar</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {solicitud === 1 ? <>
+
+        <div className="container">
         <div className="title">Pedir gas con Descuento, oferta especial</div>
         <div className="content">
           <form action="#" onSubmit={handleSubmit}>
@@ -257,9 +259,9 @@ const From2 = () => {
               </div>
             </div>
             <div className="gender-details">
-              <input type="radio" name="gender" value="5 litros $8.990" id="dot-1" onChange={e => setProducto(e.target.value)} />
-              <input type="radio" name="gender" value="11 litros $16.990" id="dot-2" onChange={e => setProducto(e.target.value)} />
-              <input type="radio" name="gender" value="15 litros $20.990" id="dot-3" onChange={e => setProducto(e.target.value)} />
+              <input type="radio" name="gender" value="5 litros $8.990" id="dot-1"  />
+              <input type="radio" name="gender" value="11 litros $16.990" id="dot-2"  />
+              <input type="radio" name="gender" value="15 litros $20.990" id="dot-3" />
               <span className="gender-title">La oferta especial te permite comprar 1 producto por pedido</span>
               <div className="category">
                 <label htmlFor="dot-1" onClick={() => setProducto(1)}>
@@ -283,7 +285,9 @@ const From2 = () => {
           </form>
         </div>
       </div>
+      
+      </> : <><div className='container'> <div className="title"> {resultmsj}</div> </div></>}
     </div>
   );
 };
-export default From2;
+export default FormularioInteligente;

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS Pedidos (
   fechahora TIMESTAMP NOT NULL,
   direccion_entrega VARCHAR(120) NOT NULL,
   infoextra VARCHAR(200) NOT NULL,
-  id_produtcto INT NOT NULL,
+  id_producto INT NOT NULL,
   latitud_pedido DECIMAL(10,8) NOT NULL,
   longitud_pedido DECIMAL(10,8) NOT NULL,
   cantidad INT,

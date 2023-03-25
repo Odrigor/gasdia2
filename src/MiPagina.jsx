@@ -1,50 +1,38 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import From2 from './From2';
 
+import { SolicitudContext } from './Context/SolicitudContext';
+
 function MiPagina() {
   const [showModal, setShowModal] = useState(true);
-  const [locationEnabled, setLocationEnabled] = useState(false);
-  const [location, setLocation] = useState();
+  const [LatitudDispositivo, setLatitudDispositivo] = useState();
+  const [LongitudDispositivo, setLongitudDispositivo] = useState();
+
+  const {setSolicitud, solicitud} =  useContext(SolicitudContext);
 
   const handleButtonClick = () => {
     navigator.geolocation.getCurrentPosition(position => {
-      setLocation(position.coords);
+      setLatitudDispositivo(position.coords.latitude);
+      setLongitudDispositivo(position.coords.longitude);
     });
   };
 
-  useEffect(()=>{
-
-    const intervalId = setInterval(() => {
-
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log("Geolocation is enabled.");
-            setLocationEnabled(true);
-          },
-          (error) => {
-            console.error("Geolocation is disabled.");
-            setLocationEnabled(false);
-            setShowModal(true);
-          }
-        );
-      }
-
-    }, 1000);
-
-    return () => {
-      clearInterval(intervalId);
-    }
-
-  },[]);
 
   const handleAccept = () => {
     // El usuario aceptó los términos y condiciones
     handleButtonClick();
-    setShowModal(false);
+    if (LatitudDispositivo=== undefined || LongitudDispositivo === undefined) {
+      console.log(LatitudDispositivo)
+      console.log(LongitudDispositivo)
+      setShowModal(true);
+    } else {
+      setShowModal(false);
+      console.log(LatitudDispositivo)
+      console.log(LongitudDispositivo)
+    }
   };
-
+  
   const handleReject = () => {
     // El usuario rechazó los términos y condiciones
     setShowModal(false);
@@ -67,7 +55,9 @@ function MiPagina() {
         </Modal.Footer>
       </Modal>
 
-      <From2></From2>
+
+
+      {solicitud===0 ? <From2></From2> : <><p>Mensaje enviado</p></>}
     </>
   );
 }

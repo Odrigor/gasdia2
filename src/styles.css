@@ -115,6 +115,27 @@ form .input-box span.details{
   border: 5px solid transparent;
   transition: all 0.3s ease;
 }
+
+
+.modal-text {
+  font-size: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.modal-button {
+  width: 81px;
+  height: 34px;
+  margin: 5px;
+}
+.modal-footer {
+  display: flex;
+  justify-content: center;
+}
+
+
+
  #dot-1:checked ~ .category label .one,
  #dot-2:checked ~ .category label .two,
  #dot-3:checked ~ .category label .three{
