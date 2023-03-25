@@ -17,6 +17,21 @@ const db = mysql.createConnection({
   });
 
 
+  app.get("/api/pedidos", (req, res) => {
+    console.log('se mandaron los pedidos')
+    const queryString = "SELECT * FROM Pedidos WHERE entregado = 0";
+  
+    db.query(queryString, (err, rows, fields) => {
+      if (err) {
+        console.log("Failed to query for Pedidos: " + err);
+        res.sendStatus(500);
+        return;
+      }
+  
+      res.json(rows);
+    });
+  });
+
   app.post('/ingresa', function (req, res) {
     const rut = parseInt(req.body.rut.replace('-', ''));
     const telefono = req.body.telefono;

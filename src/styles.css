@@ -135,6 +135,28 @@ form .input-box span.details{
 }
 
 
+.pedidos-container {
+  margin: 0 auto;
+  width: 60%;
+  text-align: center;
+}
+
+.pedido-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-copy-link {
+  padding: 10px;
+  background-color: #00a8ff;
+  color: #fff;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+
 
  #dot-1:checked ~ .category label .one,
  #dot-2:checked ~ .category label .two,
