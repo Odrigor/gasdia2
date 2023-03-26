@@ -17,6 +17,19 @@ const db = mysql.createConnection({
   });
 
 
+
+  app.post('/api/asociar', (req, res) => {
+    let id_pedido = req.body.id_pedido;
+    let repartidor = req.body.repartidor;
+    let query = `UPDATE Pedidos SET repartidor = '${repartidor}' WHERE id_pedido = ${id_pedido}`;
+    db.query(query, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.send(true);
+    });
+  });
+
+
   app.get("/api/pedidos", (req, res) => {
     console.log('se mandaron los pedidos')
     const queryString = "SELECT * FROM Pedidos WHERE entregado = 0";

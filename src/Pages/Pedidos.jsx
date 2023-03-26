@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Pedidos = () => {
   const [pedidos, setPedidos] = useState([]);
   const [nombreRepartidor, setNombreRepartidor] = useState("");
@@ -21,26 +25,34 @@ const Pedidos = () => {
     }
   }
 
-  useEffect(()=>{
-    
-  }, [])
 
   useEffect(() => {
     fetchData(setPedidos);
     const interval = setInterval(() => fetchData(setPedidos), 30000);
     return () => clearInterval(interval);
   }, []);
+
+
+
   const handleCopyLink = async (e, id_pedido) => {
     e.preventDefault();
   
     const link = `http://localhost:3000/entrega/${id_pedido}`;
     navigator.clipboard.writeText(link);
   
+    let validaa;
     try {
       const repartidor = nombreRepartidor[id_pedido];
-      await axios.post('http://localhost:3000', { id_pedido, repartidor });
+      validaa = await axios.post('http://localhost:3000/api/asociar', { id_pedido, repartidor });
     } catch (error) {
       console.error(error);
+    }
+    console.log(validaa);
+    if(validaa){
+      toast('se ha actualizado el nombre del repatidor en la base de datos');
+    }
+    else{
+      toast('No ha sido posible actualizar el nombre del repartidor en la base de datos');
     }
   };
   return (
@@ -78,7 +90,9 @@ const Pedidos = () => {
           Copiar Link
         </button>
       </form>
+      <ToastContainer />
     </div>
+    
   );
 })}
     </div>
