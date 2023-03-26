@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS Entregas (
 CREATE TABLE IF NOT EXISTS Usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   user VARCHAR(10),
+  rol INT,
   password VARCHAR(255) NOT NULL
 );
 

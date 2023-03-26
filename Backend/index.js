@@ -4,6 +4,7 @@ const port = 3000
 const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
 app.use(cors())
 app.use(bodyParser.json());
@@ -17,6 +18,58 @@ const db = mysql.createConnection({
   });
 
 
+  app.post('/api/register', (req, res) => {
+    // Recoger los datos del usuario del cuerpo de la solicitud
+      const { username, password, rol } = req.body;
+      // Encriptar la contraseña del usuario
+      const encryptedPassword = bcrypt.hashSync(password, 2);
+    // Insertar los datos del usuario en la base de datos
+    const query = `INSERT INTO usuarios (id_usuario, password, rol) VALUES ('${username}','${encryptedPassword}', ${rol});`;
+    db.query(query, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(200).json({ message: 'User registered successfully' });
+      }
+    });
+  });
+
+  // Iniciar sesión
+app.post('/api/login', (req, res) => {
+	// Recoger los datos del usuario del cuerpo de la solicitud
+	const { username, password } = req.body;
+    
+	// Obtener los datos del usuario de la base de datos
+	const query = `SELECT id_usuario, rol, password FROM Usuarios WHERE id_usuario = '${username}';`;
+	db.query(query, (err, result) => {
+		if (err) {
+			res.status(500).json({ error: err.message });
+		} else {
+			if (result.length > 0) {
+				// Comparar las contraseñas
+				const isMatch = bcrypt.compareSync(password, result[0].password);
+
+				if (isMatch) {
+					res.status(200).json({
+						message: 'User login successful',
+						user: {
+							id: result[0].id_usuario,
+							rol: result[0].rol
+						}
+					});
+				} else {
+					res.status(401).json({
+						message: 'Invalid username or password'
+					});
+				}
+			} else {
+				res.status(401).json({
+					message: 'Invalid username or password'
+				});
+			}
+		}
+	});
+});
 
   app.post('/api/asociar', (req, res) => {
     let id_pedido = req.body.id_pedido;

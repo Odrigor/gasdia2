@@ -4,7 +4,18 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useContext } from "react";
+import { UserContext } from "../Context/UserContext";
+import { Navigate } from 'react-router-dom'
+
 const Pedidos = () => {
+
+  const {user, setUser} =  useContext(UserContext);
+  console.log('xD')
+    if(!user){
+      return <Navigate to="/" ></Navigate>
+    }
+
   const [pedidos, setPedidos] = useState([]);
   const [nombreRepartidor, setNombreRepartidor] = useState("");
   const [productosEmpresa, setProductosEmpresa] = useState([]);
