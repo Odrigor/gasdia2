@@ -12,7 +12,7 @@ const Pedidos = () => {
 
   const {user, setUser} =  useContext(UserContext);
   console.log('xD')
-    if(!user){
+    if(!user || user.rol=== 2){
       return <Navigate to="/" ></Navigate>
     }
 
@@ -48,7 +48,7 @@ const Pedidos = () => {
   const handleCopyLink = async (e, id_pedido) => {
     e.preventDefault();
   
-    const link = `http://localhost:3000/entrega/${id_pedido}`;
+    const link = `http://127.0.0.1:5173/entrega/${id_pedido}`;
     navigator.clipboard.writeText(link);
   
     let validaa;

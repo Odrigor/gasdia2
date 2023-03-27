@@ -314,3 +314,27 @@ form .user-details .input-box{
 .login input[type="submit"]:focus {
   border-color: linear-gradient(135deg, #ffa60084, #ff000091);
 }
+
+
+
+.pedido {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.pedido h2 {
+  text-align: center;
+}
+
+.pedido p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.pedido button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 18px;
+}

@@ -18,6 +18,55 @@ const db = mysql.createConnection({
   });
 
 
+  app.post('/api/entrega', (req, res) => {
+    const { id_pedido, latitud_entrega, longitud_entrega } = req.body;
+    if (!id_pedido || !latitud_entrega || !longitud_entrega) {
+      return res.status(400).json({ error: 'Faltan parámetros en el cuerpo de la solicitud' });
+    }
+  
+    const queryEntrega = `INSERT INTO Entregas (id_pedido, latitud_entrega, longitud_entrega, fechahora)
+      VALUES (?, ?, ?, NOW())`;
+    db.query(queryEntrega, [id_pedido, latitud_entrega, longitud_entrega], error => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+  
+      const queryPedido = `UPDATE Pedidos SET entregado = 1 WHERE id_pedido = ?`;
+      db.query(queryPedido, [id_pedido], error => {
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        res.json({ success: true });
+      });
+    });
+  }); 
+
+
+
+  app.post('/api/infoentrega', (req, res) => {
+    const id_pedido = req.body.id_pedido;
+    if (!id_pedido) {
+      return res.status(400).json({ error: 'Falta el id_pedido en el cuerpo de la solicitud' });
+    }
+  
+    const query = `SELECT p.direccion_entrega, p.infoextra, c.nombre, c.telefono, pr.nombre AS producto
+      FROM Pedidos p
+      JOIN Clientes c ON p.id_cliente = c.rut
+      JOIN Productos pr ON p.id_producto = pr.id_producto
+      WHERE p.id_pedido = ? AND p.entregado = 0`;
+  
+    db.query(query, [id_pedido], (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      if (results.length === 0) {
+        return res.json(false);
+      }
+      res.json(results[0]);
+    });
+  });
+
+
   app.post('/api/register', (req, res) => {
     // Recoger los datos del usuario del cuerpo de la solicitud
       const { username, password, rol } = req.body;
