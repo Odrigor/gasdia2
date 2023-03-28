@@ -114,11 +114,11 @@ const FormularioInteligente = () => {
 
 
     if (!validarRut(rut)) {
-      notify('Rut invalido');
+      toast.error('Rut invalido');
       return;
     }
     if(producto===''){
-      notify('No se ha seleccionado un producto');
+      toast.error('No se ha seleccionado un producto');
       return;
     }
 
@@ -149,7 +149,7 @@ const FormularioInteligente = () => {
   })
   .then(function (response) {
     if(response.data){
-      console.log('Pedido aprobado')
+      toast.success('Pedido aprobado');
       setresultmsj('¡Tu pedido está en camino! Queremos agradecerte por elegir nuestro servicio de gas con descuento en línea y esperamos superar tus expectativas. ¡Gracias por ser parte de nuestra familia de clientes satisfechos!')
       setSolicitud(0)
     }

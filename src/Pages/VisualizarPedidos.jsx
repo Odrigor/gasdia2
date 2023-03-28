@@ -1,70 +1,95 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { loadModules } from 'esri-loader';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const VisualizarPedidos = () => {
-  const [diasVentas, setDiasVentas] = useState(0);
-  const [pedidosVentas, setPedidosVentas] = useState([]);
+  const [dias, setDias] = useState('');
+  const [data, setData] = useState([]);
+  const [mapType, setMapType] = useState(null);
 
-  const handleGenerarMapa = () => {
-    axios.get(`http://localhost:3000/api/positions/${diasVentas}`)
-      .then(res => {
-        setPedidosVentas(res.data);
+  const uri = import.meta.env.VITE_BACKEND_URL;
 
-        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/GraphicsLayer', 'esri/Graphic', 'esri/renderers/HeatmapRenderer'])
-          .then(([Map, MapView, GraphicsLayer, Graphic, HeatmapRenderer]) => {
-            const map = new Map({
-              basemap: 'streets-navigation-vector'
-            });
+  const handleInputChange = (event) => {
+    setDias(event.target.value);
+  };
 
-            const view = new MapView({
-              container: 'map',
-              map: map,
-              center: [-70.6506, -33.4372],
-              zoom: 12
-            });
+  const handleButtonClick = (type) => {
+    if (!dias) {
+      toast.error('Es necesario especificar una cantidad de dias');
+      return;
+    }
 
-            const graphicsLayer = new GraphicsLayer();
-            map.add(graphicsLayer);
-
-            res.data.forEach(pedido => {
-              const point = {
-                type: 'point',
-                longitude: pedido.longitud_pedido,
-                latitude: pedido.latitud_pedido
-              };
-
-              const pointGraphic = new Graphic({
-                geometry: point
-              });
-
-              graphicsLayer.add(pointGraphic);
-            });
-
-            const heatmapRenderer = new HeatmapRenderer({
-              field: 'fieldName',
-              blurRadius: 10,
-              maxPixelIntensity: 25,
-              minPixelIntensity: 0
-            });
-
-            graphicsLayer.renderer = heatmapRenderer;
-          })
-          .catch(err => console.error(err));
+    axios.get(uri+`/api/positions/${dias}`)
+      .then((response) => {
+        setData(response.data);
+        setMapType(type);
       })
-      .catch(err => console.error(err));
-  }
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    if (mapType === 'points') {
+      createMap();
+    }
+  }, [mapType]);
+
+  const createMap = () => {
+    loadModules(['esri/Map', 'esri/views/MapView', 'esri/Graphic', 'esri/layers/GraphicsLayer'], { css: true })
+      .then(([Map, MapView, Graphic, GraphicsLayer]) => {
+        const map = new Map({
+          basemap: 'hybrid'
+        });
+
+        const view = new MapView({
+          container: 'map',
+          map: map,
+          center: [-70.6506, -33.4372],
+          zoom: 12
+        });
+
+        const graphicsLayer = new GraphicsLayer();
+        map.add(graphicsLayer);
+
+        data.forEach((pedido) => {
+          const point = {
+            type: 'point',
+            longitude: pedido.longitud_pedido,
+            latitude: pedido.latitud_pedido
+          };
+
+          const simpleMarkerSymbol = {
+            type: 'simple-marker',
+            color: [226, 119, 40],
+            outline: {
+              color: [255, 255, 255],
+              width: 1
+            }
+          };
+
+          const pointGraphic = new Graphic({
+            geometry: point,
+            symbol: simpleMarkerSymbol
+          });
+
+          graphicsLayer.add(pointGraphic);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
-    <>
-      <div>
-        <label htmlFor="diasVentas">Días:</label>
-        <input type="number" id="diasVentas" value={diasVentas} onChange={(event) => setDiasVentas(event.target.value)} />
-        <button onClick={handleGenerarMapa}>Generar Mapa</button>
-      </div>
-
-      <div id="map" style={{ width: '100%', height: '500px' }}></div>
-    </>
+    <div>
+      <input type="text" onChange={handleInputChange} />
+      <button onClick={() => handleButtonClick('points')}>Generar mapa de puntos</button>
+      <div id="map" style={{ width: '80%', height: '500px' }}></div>
+      <ToastContainer></ToastContainer>
+    </div>
   );
 };
 

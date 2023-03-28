@@ -60,10 +60,10 @@ const Pedidos = () => {
     }
     console.log(validaa);
     if(validaa){
-      toast('se ha actualizado el nombre del repatidor en la base de datos');
+      toast.success('se ha actualizado el nombre del repatidor en la base de datos');
     }
     else{
-      toast('No ha sido posible actualizar el nombre del repartidor en la base de datos');
+      toast.error('No ha sido posible actualizar el nombre del repartidor en la base de datos');
     }
   };
   return (

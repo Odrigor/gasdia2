@@ -44,6 +44,11 @@ function Pedido() {
   }, [id, ubicacion]);
 
   const handleEntrega = () => {
+    if (confirm('¿Estás seguro?')) {
+      
+    } else {
+      return
+    }
     if (!ubicacion) return;
     axios
       .post('http://localhost:3000/api/entrega', {
