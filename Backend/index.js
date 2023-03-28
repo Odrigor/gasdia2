@@ -132,6 +132,38 @@ app.post('/api/login', (req, res) => {
   });
 
 
+  app.get('/api/positions/:dias', (req, res) => {
+    const dias = req.params.dias;
+    const query = `SELECT id_pedido, latitud_pedido, longitud_pedido FROM Pedidos WHERE fechahora >= DATE(NOW()) - INTERVAL ? DAY`;
+    db.query(query, [dias], (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(results);
+      }
+    });
+  });
+
+  
+  app.get('/api/pedidos/registros', (req, res) => {
+    const fecha = req.query.fecha;
+  
+    if (!fecha) {
+      res.status(400).json({ error: 'La fecha es requerida' });
+      return;
+    }
+  
+    const query = `SELECT * FROM Pedidos WHERE DATE(fechahora) = ?`;
+    db.query(query, [fecha], (error, results) => {
+      if (error) {
+        res.status(500).json({ error: error.message });
+        return;
+      }
+  
+      res.json(results);
+    });
+  });
+
   app.get("/api/pedidos", (req, res) => {
     console.log('se mandaron los pedidos')
     const queryString = "SELECT * FROM Pedidos WHERE entregado = 0";
@@ -197,6 +229,22 @@ app.post('/api/login', (req, res) => {
         res.json(results);
       }
     });
+  });
+
+  app.put('/api/productos', (req, res) => {
+    const productosModificados = req.body;
+    let query = 'UPDATE Productos SET precio_original = ?, nombre = ?, precio_promocional = ?, dias_margen = ? WHERE id_producto = ?';
+  
+    productosModificados.forEach(producto => {
+      const { precio_original, nombre, precio_promocional, dias_margen, id_producto } = producto;
+      db.query(query, [precio_original, nombre, precio_promocional, dias_margen, id_producto], (err, results) => {
+        if (err) {
+          res.status(500).send(err);
+        }
+      });
+    });
+  
+    res.send('Cambios guardados con éxito');
   });
 
   app.post('/api/productos', (req, res) => {

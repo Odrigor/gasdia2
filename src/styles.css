@@ -338,3 +338,63 @@ form .user-details .input-box{
   padding: 10px 20px;
   font-size: 18px;
 }
+
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #333;
+}
+
+.navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.navbar li {
+  margin: 0 10px;
+}
+
+.navbar button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.navbar button:hover {
+  color: #ddd;
+}
+
+
+.registros {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.registros .form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.registros .form label {
+  margin-right: 10px;
+}
+
+.registros .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 20px;
+}
+
+.registros .card {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
