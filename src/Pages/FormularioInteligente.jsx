@@ -8,6 +8,8 @@ import { SolicitudContext } from '../Context/SolicitudContext';
 import { Modal, Button } from 'react-bootstrap';
  
 const FormularioInteligente = () => {
+
+  const uri = import.meta.env.VITE_BACKEND_URL;
   //modal
   const [showModal, setShowModal] = useState(true);
   //datos del formulario
@@ -65,7 +67,7 @@ const FormularioInteligente = () => {
   const [productosEmpresa, setProductosEmpresa] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/productos')
+    axios.get(uri+'/api/productos')
       .then(res => setProductosEmpresa(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -129,7 +131,7 @@ const FormularioInteligente = () => {
 
          if(calculateDistance(location.y, location.x, latitude2, longitude2) < 1500 ) {
           toast('Su pedido esta siendo procesado, espere resuesta');
-          axios.post('http://localhost:3000/ingresa', {
+          axios.post(uri+'/api/ingresa', {
             nombre: nombre,
             rut: rut,
             correo: email,

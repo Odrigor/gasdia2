@@ -206,7 +206,7 @@ app.post('/api/login', (req, res) => {
     });
   });
 
-  app.post('/ingresa', function (req, res) {
+  app.post('/api/ingresa', function (req, res) {
     const rut = parseInt(req.body.rut.replace('-', ''));
     const telefono = req.body.telefono;
     const id_producto = req.body.id_producto;

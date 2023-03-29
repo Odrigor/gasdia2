@@ -9,6 +9,7 @@ import { UserContext } from "../Context/UserContext";
 import { Navigate } from 'react-router-dom'
 
 const GestionProductos = () => {
+  const uri = import.meta.env.VITE_BACKEND_URL;
   const {user, setUser} =  useContext(UserContext);
   if(!user || user.rol=== 1){
     return <Navigate to="/" ></Navigate>
@@ -18,7 +19,7 @@ const GestionProductos = () => {
   const [productosModificados, setProductosModificados] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/productos')
+    axios.get(uri+'/api/productos')
       .then(res => {
         setProductosEmpresa(res.data);
         setProductosModificados(res.data);
@@ -34,7 +35,7 @@ const GestionProductos = () => {
   }
 
   const handleSaveChanges = () => {
-    axios.put('http://localhost:3000/api/productos', productosModificados)
+    axios.put(uri+'/api/productos', productosModificados)
       .then(res => {
         toast.success('Cambios guardados con éxito');
         setProductosEmpresa(productosModificados);
