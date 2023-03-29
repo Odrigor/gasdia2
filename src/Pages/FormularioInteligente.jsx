@@ -139,8 +139,8 @@ const FormularioInteligente = () => {
             direccion_entrega: address + ' ' + direccionNumero ,
             latitud_pedido: latitude2,
             longitud_pedido: longitude2,
-            //dias_margen: productosEmpresa[producto-1].dias_margen,
-            dias_margen:0,
+            dias_margen: productosEmpresa[producto-1].dias_margen,
+            //dias_margen:0,
             cantidad: 1,
             entregado: 0
   })
