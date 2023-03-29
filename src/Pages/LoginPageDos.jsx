@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../Context/UserContext";
 
+import { toast } from 'react-toastify';
+
 const LoginPageDos = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -20,22 +22,20 @@ const LoginPageDos = () => {
 				password,
 			})
 			.then((res) => {
-				console.log('Hasta aqui si funciona uwu')
-				console.log(res.data.user);
 				setUser(res.data.user)
 				navigate('/adminpanel')
 
 			})
 			.catch((err) => {
-				console.log(err)
+				toast.error('Credenciales no validas')
 			});
 	};
 
 	return (
-		<div className="login-page">
+		<div className="login-page-admin">
 			<div className="login">
 			<div className="login-triangle"></div>
-			<h2 className="login-header">Log in</h2>
+			<h2 className="login-header">Log in admin</h2>
 			<form onSubmit={handleSubmit} className="login-container">
 				<p><input type="text" placeholder="usuario(solo numeros)" value={username} onChange={(e) => setUsername(e.target.value)}></input></p>
 				<p><input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}></input></p>

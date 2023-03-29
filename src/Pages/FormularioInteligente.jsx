@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { SolicitudContext } from '../Context/SolicitudContext';
 
@@ -29,10 +29,6 @@ const FormularioInteligente = () => {
 
   const [resultmsj, setresultmsj] = useState('')
 
-
-
-
-  const notify = (msj) => toast(msj);
 
   const handleAddressChange = (e) => {
     const value = e.target.value;
@@ -131,7 +127,7 @@ const FormularioInteligente = () => {
         const location = response.data.candidates[0].location;
         console.log(`Latitude: ${location.y}, Longitude: ${location.x}`);
 
-         if(calculateDistance(location.y, location.x, latitude2, longitude2) < 12000 ) {
+         if(calculateDistance(location.y, location.x, latitude2, longitude2) < 1500 ) {
           notify('Su pedido esta siendo procesado, espere resuesta');
           axios.post('http://localhost:3000/ingresa', {
             nombre: nombre,
@@ -280,7 +276,6 @@ const FormularioInteligente = () => {
             </div>
             <div className="button">
               <input type="submit" value="Ingresar pedido" />
-              <ToastContainer />
             </div>
           </form>
         </div>

@@ -6,6 +6,7 @@ import { Navigate } from 'react-router-dom'
 import GestionProductos from './GestionProductos';
 import VisualizarPedidos from './VisualizarPedidos';
 import Registros from './Registros';
+import GestionUsuarios from "./GestionUsuarios";
 
 const AdminPanel = () => {
   const {user, setUser} =  useContext(UserContext);
@@ -17,18 +18,20 @@ const AdminPanel = () => {
 
   return (
     <>
-      <nav className="navbar">
-        <ul>
-          <li><button onClick={() => setVistaActual('gestionarProductos')}>Gestionar Productos</button></li>
-          <li><button onClick={() => setVistaActual('visualizarVentas')}>Visualizar Ventas</button></li>
-          <li><button onClick={() => setVistaActual('registros')}>Registros</button></li>
-        </ul>
-      </nav>
+    <nav className="navbar">
+      <ul>
+        <li><button onClick={() => setVistaActual('gestionarProductos')}>Gestionar Productos</button></li>
+        <li><button onClick={() => setVistaActual('visualizarVentas')}>Visualizar Ventas</button></li>
+        <li><button onClick={() => setVistaActual('registros')}>Registros</button></li>
+        <li><button onClick={() => setVistaActual('gestionarUsuarios')}>Gestión de Usuarios</button></li>
+      </ul>
+    </nav>
 
-      {vistaActual === 'gestionarProductos' && <GestionProductos />}
-      {vistaActual === 'visualizarVentas' && <VisualizarPedidos />}
-      {vistaActual === 'registros' && <Registros />}
-    </>
+    {vistaActual === 'gestionarProductos' && <GestionProductos />}
+    {vistaActual === 'visualizarVentas' && <VisualizarPedidos />}
+    {vistaActual === 'registros' && <Registros />}
+    {vistaActual === 'gestionarUsuarios' && <GestionUsuarios />}
+  </>
   );
 };
 

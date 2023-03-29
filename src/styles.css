@@ -228,6 +228,19 @@ form .user-details .input-box{
   background-position: center center;
 }
 
+.login-page-admin {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #ffa60084, #ff000091);
+  background-image: url("./celulares.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-origin:border-box;
+  background-position: center center;
+}
+
 
 .login {
   width: 400px;

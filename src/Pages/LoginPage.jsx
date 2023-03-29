@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../Context/UserContext";
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -28,6 +29,7 @@ const LoginPage = () => {
 			})
 			.catch((err) => {
 				console.log(err)
+				toast.error('Credenciales no validas')
 			});
 	};
 

@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Entregas (
 );
 CREATE TABLE IF NOT EXISTS Usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-  user VARCHAR(20),
+  user VARCHAR(20) UNIQUE,
   rol INT,
   password VARCHAR(255) NOT NULL
 );
@@ -47,6 +47,3 @@ VALUES (2, 16000 , 'gas de 11', 16000, 8);
 
 INSERT INTO Productos (id_producto, precio_original, nombre, precio_promocional, dias_margen)
 VALUES (3, 21000 , 'gas de 16', 21000, 13);
-
-INSERT INTO Usuarios (user, password, rol)
-VALUES ('admin', 'administrador', 1);

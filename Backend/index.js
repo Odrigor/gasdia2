@@ -17,6 +17,36 @@ const db = mysql.createConnection({
     database: 'plataformagas'
   });
 
+  app.get('/api/users', (req, res) => {
+    // Obtener los datos de los usuarios con rol 1 desde la base de datos
+    const query = `SELECT * FROM usuarios WHERE rol = 1;`;
+    db.query(query, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  });
+
+
+  app.post('/api/updateUser', (req, res) => {
+    // Recoger los datos del usuario del cuerpo de la solicitud
+    const { oldusername, username, password } = req.body;
+    // Encriptar la nueva contraseña del usuario
+    const encryptedPassword = bcrypt.hashSync(password, 2);
+    // Actualizar los datos del usuario en la base de datos utilizando una consulta parametrizada
+    const query = 'UPDATE usuarios SET user = ?, password = ? WHERE user = ?';
+    const values = [username, encryptedPassword, oldusername];
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(200).json({ message: 'User updated successfully' });
+      }
+    });
+  });
 
   app.post('/api/entrega', (req, res) => {
     const { id_pedido, latitud_entrega, longitud_entrega } = req.body;
@@ -73,7 +103,7 @@ const db = mysql.createConnection({
       // Encriptar la contraseña del usuario
       const encryptedPassword = bcrypt.hashSync(password, 2);
     // Insertar los datos del usuario en la base de datos
-    const query = `INSERT INTO usuarios (id_usuario, password, rol) VALUES ('${username}','${encryptedPassword}', ${rol});`;
+    const query = `INSERT INTO usuarios (user, password, rol) VALUES ('${username}','${encryptedPassword}', ${rol});`;
     db.query(query, (err, result) => {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -89,7 +119,7 @@ app.post('/api/login', (req, res) => {
 	const { username, password } = req.body;
     
 	// Obtener los datos del usuario de la base de datos
-	const query = `SELECT id_usuario, rol, password FROM Usuarios WHERE id_usuario = '${username}';`;
+	const query = `SELECT user, rol, password FROM Usuarios WHERE user = '${username}';`;
 	db.query(query, (err, result) => {
 		if (err) {
 			res.status(500).json({ error: err.message });
@@ -102,7 +132,7 @@ app.post('/api/login', (req, res) => {
 					res.status(200).json({
 						message: 'User login successful',
 						user: {
-							id: result[0].id_usuario,
+							user: result[0].user,
 							rol: result[0].rol
 						}
 					});
