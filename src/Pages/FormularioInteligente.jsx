@@ -56,7 +56,7 @@ const FormularioInteligente = () => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setAddress(suggestion.text);
+    setAddress(suggestion.text.slice(0, suggestion.text.indexOf(", Región Metropolitana de Santiago,")));
     setSuggestions([]);
   };
 
@@ -128,7 +128,7 @@ const FormularioInteligente = () => {
         console.log(`Latitude: ${location.y}, Longitude: ${location.x}`);
 
          if(calculateDistance(location.y, location.x, latitude2, longitude2) < 1500 ) {
-          notify('Su pedido esta siendo procesado, espere resuesta');
+          toast('Su pedido esta siendo procesado, espere resuesta');
           axios.post('http://localhost:3000/ingresa', {
             nombre: nombre,
             rut: rut,
@@ -139,7 +139,8 @@ const FormularioInteligente = () => {
             direccion_entrega: address + ' ' + direccionNumero ,
             latitud_pedido: latitude2,
             longitud_pedido: longitude2,
-            dias_margen: productosEmpresa[producto-1].dias_margen,
+            //dias_margen: productosEmpresa[producto-1].dias_margen,
+            dias_margen:0,
             cantidad: 1,
             entregado: 0
   })

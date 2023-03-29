@@ -19,7 +19,7 @@ const db = mysql.createConnection({
 
   app.get('/api/users', (req, res) => {
     // Obtener los datos de los usuarios con rol 1 desde la base de datos
-    const query = `SELECT * FROM usuarios WHERE rol = 1;`;
+    const query = `SELECT * FROM Usuarios WHERE rol = 1;`;
     db.query(query, (err, result) => {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -36,11 +36,10 @@ const db = mysql.createConnection({
     // Encriptar la nueva contraseña del usuario
     const encryptedPassword = bcrypt.hashSync(password, 2);
     // Actualizar los datos del usuario en la base de datos utilizando una consulta parametrizada
-    const query = 'UPDATE usuarios SET user = ?, password = ? WHERE user = ?';
+    const query = 'UPDATE Usuarios SET user = ?, password = ? WHERE user = ?';
     const values = [username, encryptedPassword, oldusername];
     db.query(query, values, (err, result) => {
       if (err) {
-        console.log(err);
         res.status(500).json({ error: err.message });
       } else {
         res.status(200).json({ message: 'User updated successfully' });
@@ -103,7 +102,7 @@ const db = mysql.createConnection({
       // Encriptar la contraseña del usuario
       const encryptedPassword = bcrypt.hashSync(password, 2);
     // Insertar los datos del usuario en la base de datos
-    const query = `INSERT INTO usuarios (user, password, rol) VALUES ('${username}','${encryptedPassword}', ${rol});`;
+    const query = `INSERT INTO Usuarios (user, password, rol) VALUES ('${username}','${encryptedPassword}', ${rol});`;
     db.query(query, (err, result) => {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -156,7 +155,6 @@ app.post('/api/login', (req, res) => {
     let query = `UPDATE Pedidos SET repartidor = '${repartidor}' WHERE id_pedido = ${id_pedido}`;
     db.query(query, (err, result) => {
       if (err) throw err;
-      console.log(result);
       res.send(true);
     });
   });
@@ -195,7 +193,6 @@ app.post('/api/login', (req, res) => {
   });
 
   app.get("/api/pedidos", (req, res) => {
-    console.log('se mandaron los pedidos')
     const queryString = "SELECT * FROM Pedidos WHERE entregado = 0";
   
     db.query(queryString, (err, rows, fields) => {
