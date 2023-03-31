@@ -192,6 +192,13 @@ app.post('/api/login', (req, res) => {
     });
   });
 
+  app.get('/api/entregas', function (req, res) {
+    db.query('SELECT * FROM Entregas', function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    });
+  });
+
   app.get("/api/pedidos", (req, res) => {
     const queryString = "SELECT * FROM Pedidos WHERE entregado = 0";
   

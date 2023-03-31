@@ -39,7 +39,7 @@ const LoginPage = () => {
 			<div className="login-triangle"></div>
 			<h2 className="login-header">Log in pedidos</h2>
 			<form onSubmit={handleSubmit} className="login-container">
-				<p><input type="text" placeholder="usuario(solo numeros)" value={username} onChange={(e) => setUsername(e.target.value)}></input></p>
+				<p><input type="text" placeholder="usuario" value={username} onChange={(e) => setUsername(e.target.value)}></input></p>
 				<p><input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}></input></p>
 				<p><input type="submit" value="Log in"></input></p>
 			</form>

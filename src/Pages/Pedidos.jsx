@@ -10,6 +10,8 @@ import { Navigate } from 'react-router-dom'
 
 const Pedidos = () => {
 
+  const uri = import.meta.env.VITE_BACKEND_URL;
+
   const {user, setUser} =  useContext(UserContext);
   console.log('xD')
     if(!user || user.rol=== 2){
@@ -21,14 +23,14 @@ const Pedidos = () => {
   const [productosEmpresa, setProductosEmpresa] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/productos')
+    axios.get(uri+'/api/productos')
       .then(res => setProductosEmpresa(res.data))
       .catch(err => console.error(err));
   }, []);
 
   async function fetchData(setPedidos) {
     try {
-      const response = await axios.get('http://localhost:3000/api/pedidos');
+      const response = await axios.get(uri+'/api/pedidos');
       console.log(response.data);
       setPedidos(response.data);
     } catch (error) {
@@ -81,7 +83,7 @@ const Pedidos = () => {
       <h3>{pedido.direccion_entrega}</h3>
       <p>{pedido.infoextra}</p>
       <p>Hora del pedido : {formattedTime}</p>
-      <p>pedido :{productosEmpresa[pedido.id_producto - 1].nombre} </p>
+      <p>pedido :{productosEmpresa[pedido.id_producto - 1].nombre}</p>
       <form>
         <input
           type="text"

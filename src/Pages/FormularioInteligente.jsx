@@ -265,15 +265,15 @@ const FormularioInteligente = () => {
               <div className="category">
                 <label htmlFor="dot-1" onClick={() => setProducto(1)}>
                   <span className="dot one" />
-                  <span className="gender">5 litros ${ productosEmpresa.length=== 0 ? null : productosEmpresa[0].precio_original}</span>
+                  <span className="gender">{ productosEmpresa.length=== 0 ? null : productosEmpresa[0].nombre} ${ productosEmpresa.length=== 0 ? null : productosEmpresa[0].precio_original}</span>
                 </label>
                 <label htmlFor="dot-2" onClick={() => setProducto(2)}>
                   <span className="dot two" />
-                  <span className="gender">11 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[1].precio_original}</span>
+                  <span className="gender">{ productosEmpresa.length=== 0 ? null : productosEmpresa[1].nombre} ${ productosEmpresa.length === 0 ? null : productosEmpresa[1].precio_original}</span>
                 </label>
                 <label htmlFor="dot-3" onClick={() => setProducto(3)}>
                   <span className="dot three" />
-                  <span className="gender">15 litros ${ productosEmpresa.length === 0 ? null : productosEmpresa[2].precio_original}</span>
+                  <span className="gender">{ productosEmpresa.length=== 0 ? null : productosEmpresa[2].nombre} ${ productosEmpresa.length === 0 ? null : productosEmpresa[2].precio_original}</span>
                 </label>
               </div>
             </div>
