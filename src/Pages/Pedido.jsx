@@ -7,6 +7,7 @@ function Pedido() {
   const [pedido, setPedido] = useState(null);
   const [ubicacion, setUbicacion] = useState(null);
   const [entregado, setEntregado] = useState(false);
+  const uri = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (navigator.geolocation) {
