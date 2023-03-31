@@ -50,13 +50,13 @@ const Pedidos = () => {
   const handleCopyLink = async (e, id_pedido) => {
     e.preventDefault();
   
-    const link = `http://127.0.0.1:5173/entrega/${id_pedido}`;
+    const link = uri+`/entrega/${id_pedido}`;
     navigator.clipboard.writeText(link);
   
     let validaa;
     try {
       const repartidor = nombreRepartidor[id_pedido];
-      validaa = await axios.post('http://localhost:3000/api/asociar', { id_pedido, repartidor });
+      validaa = await axios.post(uri+'/api/asociar', { id_pedido, repartidor });
     } catch (error) {
       console.error(error);
     }

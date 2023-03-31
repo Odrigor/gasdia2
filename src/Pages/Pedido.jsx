@@ -29,7 +29,7 @@ function Pedido() {
   useEffect(() => {
     if (ubicacion) {
       axios
-        .post('http://localhost:3000/api/infoentrega',  { id_pedido: id })
+        .post(uri+'/api/infoentrega',  { id_pedido: id })
         .then(res => {
           if (res.data === false) {
             setEntregado(true);
@@ -51,7 +51,7 @@ function Pedido() {
     }
     if (!ubicacion) return;
     axios
-      .post('http://localhost:3000/api/entrega', {
+      .post(uri+'/api/entrega', {
         id_pedido: id,
         latitud_entrega: ubicacion.latitud,
         longitud_entrega: ubicacion.longitud
